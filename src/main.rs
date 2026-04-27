@@ -9,15 +9,15 @@ use panic_halt as _;
 
 #[entry]
 fn main() -> ! {
-    let core_peris = cortex_m::Peripherals::take().unwrap();
-    let device_peris = pac::Peripherals::take().unwrap();
+    let core = cortex_m::Peripherals::take().unwrap();
+    let device = pac::Peripherals::take().unwrap();
 
-    let mut rcc = device_peris.RCC.constrain();
+    let mut rcc = device.RCC.constrain();
 
-    let mut gpioc = device_peris.GPIOC.split(&mut rcc);
-
+    let mut gpioc = device.GPIOC.split(&mut rcc);
     let mut led = gpioc.pc13.into_push_pull_output(&mut gpioc.crh);
-    let mut timer = Timer::syst(core_peris.SYST, &rcc.clocks).counter_hz();
+
+    let mut timer = Timer::syst(core.SYST, &rcc.clocks).counter_hz();
     timer.start(1.Hz()).unwrap();
 
     loop {
